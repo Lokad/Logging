@@ -13,7 +13,7 @@ namespace Lokad.Logging
         /// <summary> The logger associated to this trace class. </summary>        
         protected readonly Lazy<Logger> Log;
 
-        protected BaseTrace(string name)
+        public BaseTrace(string name)
         {
             Log = Tracer.CreateLoggerFor(name);
         }

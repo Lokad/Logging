@@ -296,9 +296,7 @@ namespace Lokad.Logging
             else if (mi.ReturnType == typeof(void))
             {
                 il.Emit(OpCodes.Call,
-                    typeof(Tracer).GetMethod(
-                        exn < 0 ? nameof(Emit) : nameof(EmitWithException), 
-                        BindingFlags.NonPublic | BindingFlags.Static) 
+                    typeof(Tracer).GetMethod(exn < 0 ? nameof(Emit) : nameof(EmitWithException)) 
                     ?? throw new Exception($"Could not find Tracer.{(exn < 0 ? nameof(Emit) : nameof(EmitWithException))}()"));
             }
             else
@@ -313,7 +311,7 @@ namespace Lokad.Logging
 
         /// <summary> Print a message on the provided tracer. </summary>
         /// <remarks> Used internally by the compiled interfaces. </remarks>
-        private static void Emit(
+        public static void Emit(
             BaseTrace bt, 
             string message, 
             Dictionary<string, object> ctx, 
@@ -323,7 +321,7 @@ namespace Lokad.Logging
 
         /// <summary> Print a message and exception on the provided tracer. </summary>
         /// <remarks> Used internally by the compiled interfaces. </remarks>
-        private static void EmitWithException(
+        public static void EmitWithException(
             BaseTrace bt, 
             Exception ex, 
             string message, 
@@ -333,7 +331,7 @@ namespace Lokad.Logging
             bt.EmitLogMessage(ex, message, ctx, level);
         
         /// <summary> Construct a dictionary from a context (as [key,value,key,value] array). </summary>
-        private static IReadOnlyDictionary<string, object> MakeContext(IReadOnlyList<object> p)
+        public static IReadOnlyDictionary<string, object> MakeContext(IReadOnlyList<object> p)
         {
             var d = new Dictionary<string, object>();
             for (var i = 0; i < p.Count; i += 2)
