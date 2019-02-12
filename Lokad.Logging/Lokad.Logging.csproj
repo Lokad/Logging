@@ -1,22 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net452;net462;netstandard2.0</TargetFrameworks>
     <AssemblyName>Lokad.Logging</AssemblyName>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <OutputType>Library</OutputType>
     <Company>Lokad</Company>
-    <Copyright>Copyright © Lokad 2018</Copyright>
+    <Copyright>Copyright © Lokad 2019</Copyright>
 
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <FileVersion>1.0.3.0</FileVersion>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <FileVersion>1.0.4.0</FileVersion>
     <PackageId>Lokad.Logging</PackageId>
-    <PackageVersion>1.0.3.0</PackageVersion>
+    <PackageVersion>1.0.4.0</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Lokad</Authors>
     <Description>A library for emitting normalized log messages.</Description>
     <PackageLicenseUrl>https://github.com/Lokad/Logging/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Lokad/Logging</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Lokad/Logging/master/lokad.png</PackageIconUrl>
+    <Version>1.0.4</Version>
   </PropertyGroup>
   <ItemGroup />  
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

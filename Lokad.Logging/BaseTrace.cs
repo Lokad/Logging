@@ -26,10 +26,7 @@ namespace Lokad.Logging
             var log = Log.Value;
             if (log == null) throw new NullReferenceException("Expected Logger");
 
-            var evt = new LogEventInfo(Tracer.Level(level), log.Name, message)
-            {
-                Parameters = new object[] { context }
-            };
+            var evt = new LogEventInfo(Tracer.Level(level), log.Name, message);
 
             var hasContext = context != null && context.Count > 0;
             if (hasContext)
