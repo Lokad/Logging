@@ -83,38 +83,41 @@ namespace Lokad.Logging
 
             if (!typeof(ITrace).IsAssignableFrom(interfaceType))
                 throw new ArgumentException($"{interfaceType} must implement ITrace", nameof(interfaceType));
-            
-            if (Implementations.TryGetValue(interfaceType, out var found))
-                return found;
 
-            var module = ModuleBuilder;
-            var tb = module.DefineType(
-                interfaceType.FullName + "Impl" + _implCount++,
-                TypeAttributes.Public | TypeAttributes.BeforeFieldInit,
-                typeof(BaseTrace),
-                new[] { interfaceType });
-
-            CreateConstructor(tb);
-
-            // override all methods (which are Logs or Activities)
-            foreach (var mi in interfaceType.GetMethods())
+            lock (Implementations)
             {
-                if (mi.IsSpecialName) continue; // skip getters/setters
+                if (Implementations.TryGetValue(interfaceType, out var found))
+                    return found;
 
-                // define the method
-                CreateOverride(tb, mi);
+                var module = ModuleBuilder;
+                var tb = module.DefineType(
+                    interfaceType.FullName + "Impl" + _implCount++,
+                    TypeAttributes.Public | TypeAttributes.BeforeFieldInit,
+                    typeof(BaseTrace),
+                    new[] { interfaceType });
+
+                CreateConstructor(tb);
+
+                // override all methods (which are Logs or Activities)
+                foreach (var mi in interfaceType.GetMethods())
+                {
+                    if (mi.IsSpecialName) continue; // skip getters/setters
+
+                    // define the method
+                    CreateOverride(tb, mi);
+                }
+
+                var type = tb.CreateTypeInfo();
+
+                // Create the instance
+                var ctor = type.GetConstructor(new[] { typeof(string) })
+                        ?? throw new Exception("Expected new(string) constructor");
+
+                found = ctor.Invoke(new object[] { fullOwnerName });
+
+                Implementations.Add(interfaceType, found);
+                return found;
             }
-
-            var type = tb.CreateTypeInfo();
-
-            // Create the instance
-            var ctor = type.GetConstructor(new[] { typeof(string) })
-                    ?? throw new Exception("Expected new(string) constructor");
-
-            found = ctor.Invoke(new object[] { fullOwnerName });
-
-            Implementations.Add(interfaceType, found);
-            return found;
         }
 
         /// <summary> Generate a constructor for the specified type. </summary>
