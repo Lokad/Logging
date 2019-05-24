@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using NLog;
+using NLog.Layouts;
+using NLog.Targets;
 
 namespace Lokad.Logging
 {
@@ -33,12 +35,12 @@ namespace Lokad.Logging
             get
             {
                 if (_moduleBuilderCache != null) return _moduleBuilderCache;
-                
+
                 var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
                     new AssemblyName { Name = "Trace" },
                     AssemblyBuilderAccess.Run);
 
-                return _moduleBuilderCache = assemblyBuilder.DefineDynamicModule("TraceModule");                
+                return _moduleBuilderCache = assemblyBuilder.DefineDynamicModule("TraceModule");
             }
         }
 
@@ -59,7 +61,7 @@ namespace Lokad.Logging
             if (exp.NodeType != ExpressionType.MemberAccess)
                 throw new ArgumentException($"Unrecognized lambda body '{exp}'.", nameof(staticField));
 
-            var declaringType = ((MemberExpression) exp).Member.DeclaringType
+            var declaringType = ((MemberExpression)exp).Member.DeclaringType
                                 ?? throw new ArgumentException($"'{exp}': member has no declaring type.", nameof(staticField));
 
             return Bind<T>(declaringType.FullName);
@@ -73,6 +75,53 @@ namespace Lokad.Logging
         {
             var impl = CreateImplementation(typeof(T), loggerName);
             return (T)impl;
+        }
+
+        /// <summary>
+        /// Setup NLog to send json messages to the given Uri.
+        ///
+        /// The setup adds
+        /// <see href="https://github.com/NLog/NLog/wiki/Network-target">NLog Network target</see>
+        /// named RemoteJsonTarget using
+        /// a <see href="https://github.com/NLog/NLog/wiki/JsonLayout">Json layout</see>.
+        /// The messages at a log level equal or greater to the given minimal level will be sent
+        /// to the given remote host as Json payloads.
+        ///
+        /// </summary>
+        /// <param name="address">Remote server recipient of the log messages address layout.</param>
+        /// <param name="apiKey">Api key appended to the log messages to get the messages accepted by the remote host.</param>
+        /// <param name="application">Name of the application that will be sending the logs through the LogManager.</param>
+        /// <param name="environment">Runtime Environment of the logging application.</param>
+        /// <param name="minLevel">Minimal log level of the messages that should be sent.</param>
+        public static void SetupRemoteJsonLogger(string address, string apiKey,
+            string application, string environment, LogLevel minLevel = LogLevel.Info)
+        {
+            var configuration = LogManager.Configuration;
+
+            var remoteJsonTarget = new NetworkTarget("RemoteJsonTarget")
+            {
+                Address = address,
+                Layout = new JsonLayout()
+                {
+                    Attributes =
+                    {
+                        new JsonAttribute("Timestamp", "${longdate}"),
+                        new JsonAttribute("ApiKey", apiKey),
+                        new JsonAttribute("Application", application),
+                        new JsonAttribute("Environment", environment),
+                        new JsonAttribute("Hostname", "${machinename}"),
+                        new JsonAttribute("LoggerName", "${logger}"),
+                        new JsonAttribute("Message", "${message}"),
+                        new JsonAttribute("Exception", "${exception}")
+                    },
+                    IncludeAllProperties = true
+                }
+            };
+
+            configuration.AddTarget(remoteJsonTarget);
+            configuration.AddRule(Level(minLevel), NLog.LogLevel.Fatal, remoteJsonTarget);
+
+            LogManager.Configuration = configuration;
         }
 
         /// <summary> Implement the <see cref="ITrace"/>-derived interface. </summary>
@@ -125,8 +174,8 @@ namespace Lokad.Logging
         private static void CreateConstructor(TypeBuilder tb)
         {
             var cb = tb.DefineConstructor(
-                MethodAttributes.Public, 
-                CallingConventions.Standard, 
+                MethodAttributes.Public,
+                CallingConventions.Standard,
                 new[] { typeof(string) });
 
             var cbil = cb.GetILGenerator();
@@ -177,7 +226,7 @@ namespace Lokad.Logging
         /// </summary>
         internal static Lazy<Logger> CreateLoggerFor(string name) =>
             new Lazy<Logger>(() => (_getLogger ?? LogManager.GetLogger)(name));
-        
+
         /// <summary> Implement a logging method. </summary>
         private static void ImplementLogMethod(MethodInfo mi, MethodBuilder mbs)
         {
@@ -299,13 +348,13 @@ namespace Lokad.Logging
             else if (mi.ReturnType == typeof(void))
             {
                 il.Emit(OpCodes.Call,
-                    typeof(Tracer).GetMethod(exn < 0 ? nameof(Emit) : nameof(EmitWithException)) 
+                    typeof(Tracer).GetMethod(exn < 0 ? nameof(Emit) : nameof(EmitWithException))
                     ?? throw new Exception($"Could not find Tracer.{(exn < 0 ? nameof(Emit) : nameof(EmitWithException))}()"));
             }
             else
             {
                 throw new ArgumentException(
-                    $"Return type {mi.ReturnType} not supported, expected void or Activity", 
+                    $"Return type {mi.ReturnType} not supported, expected void or Activity",
                     nameof(mi));
             }
 
@@ -315,24 +364,24 @@ namespace Lokad.Logging
         /// <summary> Print a message on the provided tracer. </summary>
         /// <remarks> Used internally by the compiled interfaces. </remarks>
         public static void Emit(
-            BaseTrace bt, 
-            string message, 
-            Dictionary<string, object> ctx, 
-            LogLevel level) 
+            BaseTrace bt,
+            string message,
+            Dictionary<string, object> ctx,
+            LogLevel level)
         =>
             bt.EmitLogMessage(message, ctx, level);
 
         /// <summary> Print a message and exception on the provided tracer. </summary>
         /// <remarks> Used internally by the compiled interfaces. </remarks>
         public static void EmitWithException(
-            BaseTrace bt, 
-            Exception ex, 
-            string message, 
-            Dictionary<string, object> ctx, 
+            BaseTrace bt,
+            Exception ex,
+            string message,
+            Dictionary<string, object> ctx,
             LogLevel level)
         =>
             bt.EmitLogMessage(ex, message, ctx, level);
-        
+
         /// <summary> Construct a dictionary from a context (as [key,value,key,value] array). </summary>
         public static IReadOnlyDictionary<string, object> MakeContext(IReadOnlyList<object> p)
         {
