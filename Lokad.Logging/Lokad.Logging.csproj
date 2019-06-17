@@ -7,17 +7,17 @@
     <Company>Lokad</Company>
     <Copyright>Copyright © Lokad 2019</Copyright>
 
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
-    <FileVersion>1.0.6.0</FileVersion>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
     <PackageId>Lokad.Logging</PackageId>
-    <PackageVersion>1.0.6.0</PackageVersion>
+    <PackageVersion>1.0.7.0</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Lokad</Authors>
     <Description>A library for emitting normalized log messages.</Description>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Lokad/Logging</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Lokad/Logging/master/lokad.png</PackageIconUrl>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
