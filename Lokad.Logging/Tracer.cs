@@ -110,9 +110,11 @@ namespace Lokad.Logging
                         new JsonAttribute("Application", application),
                         new JsonAttribute("Environment", environment),
                         new JsonAttribute("Hostname", "${machinename}"),
+                        new JsonAttribute("LogLevel", "${level}"),
                         new JsonAttribute("LoggerName", "${logger}"),
                         new JsonAttribute("Message", "${message}"),
-                        new JsonAttribute("Exception", "${exception}")
+                        new JsonAttribute("Exception", "${exception}"),
+                        new JsonAttribute("Stacktrace", "${stacktrace}")
                     },
                     IncludeAllProperties = true
                 }
