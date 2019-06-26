@@ -113,8 +113,7 @@ namespace Lokad.Logging
                         new JsonAttribute("LogLevel", "${level}"),
                         new JsonAttribute("LoggerName", "${logger}"),
                         new JsonAttribute("Message", "${message}"),
-                        new JsonAttribute("Exception", "${exception}"),
-                        new JsonAttribute("Stacktrace", "${stacktrace}")
+                        new JsonAttribute("Exception", "${exception:format=toString,Data:maxInnerExceptionLevel=10}"),
                     },
                     IncludeAllProperties = true
                 }
