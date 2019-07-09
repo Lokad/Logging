@@ -82,6 +82,7 @@ an [NLogNetwork target](https://github.com/NLog/NLog/wiki/Network-target) pointi
 to the given server with a [JsonLayout](https://github.com/NLog/NLog/wiki/JsonLayout).  
 The JsonLayout will push the following attributes with the corresponding layouts:
 - Timestamp ([${longdate}](https://github.com/NLog/NLog/wiki/LongDate-Layout-Renderer))
+- ProcessTime ([${processtime}](https://github.com/NLog/NLog/wiki/ProcessTime-Layout-Renderer))
 - ApiKey (the key provided in the method call).
 - Application (the application provided in the method call).
 - Environment (the runtime environment provided in the method call).

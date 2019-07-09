@@ -106,6 +106,7 @@ namespace Lokad.Logging
                     Attributes =
                     {
                         new JsonAttribute("Timestamp", "${longdate}"),
+                        new JsonAttribute("ProcessTime", "${processtime}"),
                         new JsonAttribute("ApiKey", apiKey),
                         new JsonAttribute("Application", application),
                         new JsonAttribute("Environment", environment),
