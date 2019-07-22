@@ -7,8 +7,8 @@
     <Company>Lokad</Company>
     <Copyright>Copyright © Lokad 2019</Copyright>
 
-    <AssemblyVersion>1.0.8.0</AssemblyVersion>
-    <FileVersion>1.0.8.0</FileVersion>
+    <AssemblyVersion>1.0.9.0</AssemblyVersion>
+    <FileVersion>1.0.9.0</FileVersion>
     <PackageId>Lokad.Logging</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Lokad</Authors>
@@ -16,7 +16,7 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Lokad/Logging</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Lokad/Logging/master/lokad.png</PackageIconUrl>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
