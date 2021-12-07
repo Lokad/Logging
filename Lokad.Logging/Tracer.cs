@@ -48,6 +48,9 @@ namespace Lokad.Logging
         ///     Return an implementation of an interface that extends <see cref="ITrace"/>.
         ///     Uses the name of the class that contains the static field as the logger name.
         /// </summary>
+#if NETSTANDARD2_1_OR_GREATER
+        [return: System.Diagnostics.CodeAnalysis.NotNull]
+#endif
         public static T Bind<T>(Expression<Func<T>> staticField)
             where T : class, ITrace
         {
@@ -71,6 +74,9 @@ namespace Lokad.Logging
         ///     Return an implementation of an interface that extends <see cref="ITrace"/>.
         ///     Uses <paramref name="loggerName"/> as the logger name.
         /// </summary>
+#if NETSTANDARD2_1_OR_GREATER
+        [return: System.Diagnostics.CodeAnalysis.NotNull]
+#endif
         public static T Bind<T>(string loggerName)
         {
             var impl = CreateImplementation(typeof(T), loggerName);
